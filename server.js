@@ -98,7 +98,7 @@ app.use("/repo",function(req,res,next){
                 if(response.statusCode!==200){
                     next()
                 }else{
-                    pipe(res)
+                    res.end(response.body)
                 }
             })
     
