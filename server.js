@@ -3,6 +3,7 @@ var express = require('express'),
     fs      = require('fs'),
     app     = express(),
     eps     = require('ejs'),
+    request = require("request"),
     morgan  = require('morgan');
     
 Object.assign=require('object-assign')
@@ -90,6 +91,20 @@ app.get('/pagecount', function (req, res) {
     res.send('{ pageCount: -1 }');
   }
 });
+
+app.use("/repo",function(req,res,next){
+    request("http://repo1.maven.org/maven2"+req.path)
+            .on("response",function(response){
+                if(response.statusCode!==200){
+                    next()
+                }else{
+                    pipe(res)
+                }
+            })
+    
+},function(req,res,next){
+    request("http://bits.netbeans.org/nexus/content/groups/netbeans"+req.path).pipe(res);
+})
 
 // error handling
 app.use(function(err, req, res, next){
